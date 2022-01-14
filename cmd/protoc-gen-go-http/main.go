@@ -2,18 +2,21 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"github.com/walden/go-kit/protoc-gen-go-http/generate"
+	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
-const version = "v0.0.1"
-
 func main() {
-	showVersion := flag.Bool("version", false, "print the version and exit")
-
-	flag.Parse()
-	if *showVersion {
-		fmt.Printf("protoc-gen-go-http %v\n", version)
-		return
-	}
-
+	protogen.Options{
+		ParamFunc: flag.CommandLine.Set,
+	}.Run(func(plugin *protogen.Plugin) error {
+		plugin.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+		for _, file := range plugin.Files {
+			if file.Generate {
+				generate.GenerateFIle(plugin, file)
+			}
+		}
+		return nil
+	})
 }
