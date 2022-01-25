@@ -25,10 +25,7 @@ func Register{{.ServiceType}}Router(s *http.Server, srv {{.ServiceType}}) {
 {{range .Methods}}
 func {{.Name}}Handler(srv {{$svrType}}) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		if err := c.Bind(&in); err != nil {
-			c.AbortWithError(500, err)
-			return
-		}
+		var in {{.Request}}
 		resp, err := srv.{{.Name}}(c.Copy(), &in)
 		if err != nil {
 			c.AbortWithError(500, err)
