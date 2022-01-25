@@ -14,7 +14,7 @@ const (
 	version              = "v0.0.1"
 	contextPackage       = protogen.GoImportPath("context")
 	ginPackage           = protogen.GoImportPath("github.com/gin-gonic/gin")
-	transportHTTPPackage = protogen.GoImportPath("httpServer github.com/waldenlake/go-kit/transport/http")
+	transportHTTPPackage = protogen.GoImportPath("github.com/waldenlake/go-kit/transport/http")
 	deprecationComment   = "// Deprecated: Do not use."
 )
 
@@ -43,8 +43,8 @@ func generateFileContent(plugin *protogen.Plugin, file *protogen.File, g *protog
 	g.P("// This is a compile-time assertion to ensure that this generated file")
 	g.P("// is compatible with the go-kit package it is being compiled against.")
 	g.P("var _ = new(", contextPackage.Ident("Context"), ")")
-	g.P("var _ = new(", ginPackage.Ident("Version"), ")")
-	g.P("var _ = new(", transportHTTPPackage.Ident("JSON"), ")")
+	g.P("var _ = ", ginPackage.Ident("Version"))
+	g.P("var _ = ", transportHTTPPackage.Ident("JSON"))
 	g.P()
 
 	for _, service := range file.Services {

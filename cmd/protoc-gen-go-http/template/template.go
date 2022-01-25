@@ -15,7 +15,7 @@ type {{.ServiceType}} interface {
 {{- end}}
 }
 
-func Register{{.ServiceType}}Router(s *httpServer.Server, srv {{.ServiceType}}) {
+func Register{{.ServiceType}}Router(s *http.Server, srv {{.ServiceType}}) {
 	r := s.Router()
 	{{- range .Methods}}
 	r.{{.Method}}("{{.Path}}", {{.Name}}Handler(srv))
@@ -35,7 +35,7 @@ func {{.Name}}Handler(srv {{$svrType}}) func(c *gin.Context) {
 			c.AbortWithError(500, err)
 			return
 		}
-		httpServer.JSON(resp, c)
+		http.JSON(resp, c)
 	}
 }
 {{end}}
