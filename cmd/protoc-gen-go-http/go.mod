@@ -1,4 +1,4 @@
-module github.com/waldenlake/go-kit/protoc-gen-go-http
+module github.com/waldenlake/go-kit/cmd/protoc-gen-go-http
 
 go 1.17
 
