@@ -26,10 +26,19 @@ func Register{{.ServiceType}}Router(s *http.Server, srv {{.ServiceType}}) {
 func {{.Name}}Handler(srv {{$svrType}}) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var in {{.Request}}
-		if err := c.Bind(&in); err != nil {
-			c.AbortWithError(500, err)
-			return
-		}
+		{{- if eq .Method "GET"}}
+			err := proto.Unmarshal([]byte(c.Request.URL.Query().Encode()), &in)
+			if err != nil {
+				c.AbortWithError(500, err)
+				return
+			}
+		{{- end}}
+		{{- if eq .Method "POST"}}
+			if err := c.Bind(&in); err != nil {
+				c.AbortWithError(500, err)
+				return
+			}
+		{{- end}}
 		resp, err := srv.{{.Name}}(c.Copy(), &in)
 		if err != nil {
 			c.AbortWithError(500, err)
