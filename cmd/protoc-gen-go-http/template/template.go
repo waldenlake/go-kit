@@ -35,14 +35,7 @@ func {{.Name}}Handler(srv {{$svrType}}) func(c *gin.Context) {
 			c.AbortWithError(500, err)
 			return
 		}
-		jsonpbMarshaler := &jsonpb.Marshaler{
-			EnumsAsInts:  true, //是否将枚举值设定为整数，而不是字符串类型
-			EmitDefaults: true, //是否将字段值为空的渲染到JSON结构中
-			OrigName:     true, //是否使用原生的proto协议中的字段
-		}
-		var buffer bytes.Buffer
-		jsonpbMarshaler.Marshal(&buffer, resp)
-		c.DataFromReader(http.StatusOK, int64(buffer.Len()), "application/json", &buffer, nil)
+		httpServer.JSON(resp, c)
 	}
 }
 {{end}}

@@ -1,9 +1,12 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
 	"github.com/waldenlake/go-kit/transport"
 	"go.uber.org/zap"
 	"net"
@@ -93,4 +96,15 @@ func (s *Server) Start(ctx context.Context) error {
 func (s *Server) Close(ctx context.Context) error {
 	s.log.Info("[HTTP] server stopping")
 	return s.Shutdown(ctx)
+}
+
+func JSON(resp proto.Message, c *gin.Context) {
+	jsonpbMarshaler := &jsonpb.Marshaler{
+		EnumsAsInts:  true, //是否将枚举值设定为整数，而不是字符串类型
+		EmitDefaults: true, //是否将字段值为空的渲染到JSON结构中
+		OrigName:     true, //是否使用原生的proto协议中的字段
+	}
+	var buffer bytes.Buffer
+	jsonpbMarshaler.Marshal(&buffer, resp)
+	c.DataFromReader(http.StatusOK, int64(buffer.Len()), "application/json", &buffer, nil)
 }
