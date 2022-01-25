@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/waldenlake/go-kit/protoc-gen-go-http/generate"
+	"github.com/waldenlake/go-kit/cmd/protoc-gen-go-http/generate"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"
 )

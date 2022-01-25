@@ -2,7 +2,7 @@ package generate
 
 import (
 	"fmt"
-	"github.com/waldenlake/go-kit/protoc-gen-go-http/template"
+	"github.com/waldenlake/go-kit/cmd/protoc-gen-go-http/template"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
