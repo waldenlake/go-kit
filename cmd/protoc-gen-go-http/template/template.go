@@ -15,7 +15,7 @@ type {{.ServiceType}} interface {
 {{- end}}
 }
 
-func Register{{.ServiceType}}Router(s *http.Server, srv {{.ServiceType}}) {
+func Register{{.ServiceType}}Router(s *httpServer.Server, srv {{.ServiceType}}) {
 	r := s.Router()
 	{{- range .Methods}}
 	r.{{.Method}}("{{.Path}}", {{.Name}}Handler(srv))
@@ -35,7 +35,14 @@ func {{.Name}}Handler(srv {{$svrType}}) func(c *gin.Context) {
 			c.AbortWithError(500, err)
 			return
 		}
-		http.JSON(resp, c)
+		jsonpbMarshaler := &jsonpb.Marshaler{
+			EnumsAsInts:  true, //是否将枚举值设定为整数，而不是字符串类型
+			EmitDefaults: true, //是否将字段值为空的渲染到JSON结构中
+			OrigName:     true, //是否使用原生的proto协议中的字段
+		}
+		var buffer bytes.Buffer
+		jsonpbMarshaler.Marshal(&buffer, resp)
+		c.DataFromReader(http.StatusOK, int64(buffer.Len()), "application/json", &buffer, nil)
 	}
 }
 {{end}}
@@ -50,11 +57,18 @@ type ServiceDesc struct {
 }
 
 type MethodDesc struct {
+	// method
 	Name    string
+	Num     int
 	Request string
 	Reply   string
-	Path    string
-	Method  string
+	// http_rule
+	Path         string
+	Method       string
+	HasVars      bool
+	HasBody      bool
+	Body         string
+	ResponseBody string
 }
 
 func (s *ServiceDesc) Execute() string {
