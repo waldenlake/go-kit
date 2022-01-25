@@ -6,12 +6,12 @@ import (
 	"text/template"
 )
 
-var httpTemplate = `
+var fileTemplate = `
 {{$svrType := .ServiceType}}
 {{$svrName := .ServiceName}}
 type {{.ServiceType}} interface {
 {{- range .MethodSets}}
-	{{.Name}}(context.Context, *{{.Request}}) (*{{.Reply}}, error)
+	{{.Name}}(c *gin.Context)
 {{- end}}
 }
 
@@ -25,17 +25,7 @@ func Register{{.ServiceType}}Router(s *http.Server, srv {{.ServiceType}}) {
 {{range .Methods}}
 func {{.Name}}Handler(srv {{$svrType}}) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var in {{.Request}}
-		if err := c.Bind(&in); err != nil {
-			c.AbortWithError(500, err)
-			return
-		}
-		resp, err := srv.{{.Name}}(c.Copy(), &in)
-		if err != nil {
-			c.AbortWithError(500, err)
-			return
-		}
-		http.JSON(resp, c)
+		srv.{{.Name}}(c)
 	}
 }
 {{end}}
@@ -63,7 +53,7 @@ func (s *ServiceDesc) Execute() string {
 		s.MethodSets[m.Name] = m
 	}
 	buf := new(bytes.Buffer)
-	tmpl, err := template.New("http").Parse(strings.TrimSpace(httpTemplate))
+	tmpl, err := template.New("http").Parse(strings.TrimSpace(fileTemplate))
 	if err != nil {
 		panic(err)
 	}

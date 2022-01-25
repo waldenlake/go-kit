@@ -2,7 +2,7 @@ package generate
 
 import (
 	"fmt"
-	"github.com/walden/go-kit/protoc-gen-go-http/template"
+	"github.com/walden/go-kit/protoc-gen-go-file/template"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
@@ -13,7 +13,7 @@ const (
 	version              = "v0.0.1"
 	contextPackage       = protogen.GoImportPath("context")
 	ginPackage           = protogen.GoImportPath("github.com/gin-gonic/gin")
-	transportHTTPPackage = protogen.GoImportPath("github.com/walden/go-kit/transport/http")
+	transportHTTPPackage = protogen.GoImportPath("github.com/walden/go-scheduler/pkg/transport/http")
 	deprecationComment   = "// Deprecated: Do not use."
 )
 
