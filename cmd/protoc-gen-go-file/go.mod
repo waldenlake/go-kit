@@ -1,4 +1,4 @@
-module github.com/walden/go-kit/protoc-gen-go-file
+module github.com/waldenlake/go-kit/protoc-gen-go-file
 
 go 1.17
 

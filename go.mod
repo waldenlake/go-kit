@@ -1,4 +1,4 @@
-module github.com/walden/go-kit
+module github.com/waldenlake/go-kit
 
 go 1.17
 
